@@ -52,24 +52,24 @@ pipeline {
 
         stage('Build Lint Requirements') {
             steps {
-                sh 'docker-compose -f docker/compose/run-lint.yaml build'
-                sh 'docker-compose -f docker/compose/sawtooth-build.yaml up'
-                sh 'docker-compose -f docker/compose/sawtooth-build.yaml down'
+                sh '/opt/homebrew/bin/docker-compose -f docker/compose/run-lint.yaml build'
+                sh '/opt/homebrew/bin/docker-compose -f docker/compose/sawtooth-build.yaml up'
+                sh '/opt/homebrew/bin/docker-compose -f docker/compose/sawtooth-build.yaml down'
             }
         }
 
         stage('Run Lint') {
             steps {
-                sh 'docker-compose -f docker/compose/run-lint.yaml up --abort-on-container-exit --exit-code-from lint-python lint-python'
-                sh 'docker-compose -f docker/compose/run-lint.yaml up --abort-on-container-exit --exit-code-from lint-rust lint-rust'
-                sh 'docker-compose -f docker/compose/run-lint.yaml up --abort-on-container-exit --exit-code-from lint-validator lint-validator'
+                sh '/opt/homebrew/bin/docker-compose -f docker/compose/run-lint.yaml up --abort-on-container-exit --exit-code-from lint-python lint-python'
+                sh '/opt/homebrew/bin/docker-compose -f docker/compose/run-lint.yaml up --abort-on-container-exit --exit-code-from lint-rust lint-rust'
+                sh '/opt/homebrew/bin/docker-compose -f docker/compose/run-lint.yaml up --abort-on-container-exit --exit-code-from lint-validator lint-validator'
             }
         }
 
         stage('Build Test Dependencies') {
             steps {
-                sh 'docker-compose -f docker-compose-installed.yaml build'
-                sh 'docker-compose -f docker/compose/external.yaml build'
+                sh '/opt/homebrew/bin/docker-compose -f /opt/homebrew/bin/docker-compose-installed.yaml build'
+                sh '/opt/homebrew/bin/docker-compose -f docker/compose/external.yaml build'
                 sh 'docker build -f docker/bandit -t bandit:$ISOLATION_ID .'
             }
         }
@@ -112,16 +112,16 @@ pipeline {
 
         stage('Build Archive Artifacts') {
             steps {
-                sh 'docker-compose -f docker/compose/copy-debs.yaml up'
+                sh '/opt/homebrew/bin/docker-compose -f docker/compose/copy-debs.yaml up'
             }
         }
     }
 
     post {
         always {
-            sh 'docker-compose -f docker/compose/sawtooth-build.yaml down'
-            sh 'docker-compose -f docker/compose/run-lint.yaml down'
-            sh 'docker-compose -f docker/compose/copy-debs.yaml down'
+            sh '/opt/homebrew/bin/docker-compose -f docker/compose/sawtooth-build.yaml down'
+            sh '/opt/homebrew/bin/docker-compose -f docker/compose/run-lint.yaml down'
+            sh '/opt/homebrew/bin/docker-compose -f docker/compose/copy-debs.yaml down'
         }
         success {
             archiveArtifacts '*.tgz, *.zip, build/debs/*.deb, build/bandit.html, coverage/html/*, docs/build/html/**, docs/build/latex/*.pdf'

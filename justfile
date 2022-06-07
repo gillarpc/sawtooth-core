@@ -101,7 +101,7 @@ lint:
 
 
 docker-lint:
-    docker-compose -f docker/compose/run-lint.yaml up \
+    /opt/homebrew/bin/docker-compose -f docker/compose/run-lint.yaml up \
         --build \
         --abort-on-container-exit \
         --exit-code-from lint-python \
